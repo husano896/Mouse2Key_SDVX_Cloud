@@ -22,6 +22,8 @@ Any parameter(will enable "any window" mode)
 TurboCharger+ Controller need to change mode to "SDVX Mode(X/Y Axis Mode)"
 
 Also, you may also need Joy2Key. 
+
+*Note: You should use 2/3 window option in config or you won't be able to close the game!(Esc won't work)
 --
 
 Q / W 對應為左旋鈕(X軸)
@@ -44,3 +46,5 @@ mouse2key (1.) (2.)
 TurboCharger+ 控制器需要切換模式為 "SDVX 模式(X/Y 軸模式)"
 
 並且需要Joy2Key來對應按鈕。
+
+※請在設定中使用第二三項的視窗選項，否則無法正常關閉遊戲！(Esc無效)
