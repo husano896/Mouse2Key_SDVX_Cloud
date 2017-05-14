@@ -15,6 +15,7 @@ mouse2key (1.) (2.)
 
 1.
 Changes the check delay(5ms by default, integer only)
+
 2.
 Any parameter(will enable "any window" mode)
 
@@ -36,6 +37,7 @@ mouse2key (1.) (2.)
 
 1.
 變更檢查延遲(預設為5ms, 僅能輸入常數)
+
 2.
 任何參數(將會啟用對應所有視窗的「測試模式」，建議開記事本測試是否正常運作)
 
