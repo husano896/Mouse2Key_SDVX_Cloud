@@ -9,59 +9,64 @@ using namespace std;
 DWORD FindProcessId(const std::wstring& processName);
 bool taskalive = false;
 bool test_mode = false;
+short doIT = 0;
 int delay = 5;
 INPUT Button[4];
 
 //Process & Active Window Checking
 void check_task() {
-	while (573) {
-		DWORD pid = FindProcessId(L"sv3c.exe");
+		DWORD pid = FindProcessId(L"sv3c.exe");  
 		HWND Active_Window = GetForegroundWindow();
 		DWORD ThreadID;GetWindowThreadProcessId(Active_Window, &ThreadID);
 		taskalive = (ThreadID == pid) || test_mode;
-		this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
+		if (pid && taskalive) SetActiveWindow(Active_Window);
 }
 
 //Do the mouse stuff
 void main_process() {
 	//F_CK YOU 573 :^
-	while (573) {
-		if (!taskalive) continue;
+
+			if (!taskalive)	return;
 			POINT CursorPos;
 			GetCursorPos(&CursorPos);
-
+			
 			/*Virtual Key 
 			MSDN : https://msdn.microsoft.com/zh-tw/library/windows/desktop/dd375731%28v=vs.85%29.aspx
 			*/
-			if ((CursorPos.x) < 100) {
-				Button[0].ki.dwFlags = KEYEVENTF_SCANCODE;
-				Button[0].ki.wScan = 0x10;  
-			}
-			else if ((CursorPos.x) > 100) {
-				Button[1].ki.dwFlags = KEYEVENTF_SCANCODE;
-				Button[1].ki.wScan = 0x11;  
-			}
 
-			if ((CursorPos.y) < 100) {
-				Button[2].ki.dwFlags = KEYEVENTF_SCANCODE;
-				Button[2].ki.wScan = 0x18;  
-			}
-			else if ((CursorPos.y) > 100) {
-				Button[3].ki.dwFlags = KEYEVENTF_SCANCODE;
-				Button[3].ki.wScan = 0x19;  
-			}
-			SendInput(4, Button, sizeof(INPUT));
-
-			SetCursorPos(100, 100);
 			//Prepare a keyup event
 			Button[0].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
 			Button[1].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
 			Button[2].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
 			Button[3].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
-			
-			this_thread::sleep_for(std::chrono::milliseconds(delay));
-		}
+
+			if (CursorPos.x < 100) {
+				Button[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+				Button[0].ki.wScan = 0x10;
+				doIT = 2;
+			}
+			else if (CursorPos.x > 100) {
+				Button[1].ki.dwFlags = KEYEVENTF_SCANCODE;
+				Button[1].ki.wScan = 0x11;
+				doIT = 2;
+			}
+
+			if (CursorPos.y < 100) {
+				Button[2].ki.dwFlags = KEYEVENTF_SCANCODE;
+				Button[2].ki.wScan = 0x18;
+				doIT = 2;
+			}
+			else if (CursorPos.y > 100) {
+				Button[3].ki.dwFlags = KEYEVENTF_SCANCODE;
+				Button[3].ki.wScan = 0x19;
+				doIT = 2;
+			}
+
+			if (doIT > 0) {
+				SendInput(4, Button, sizeof(INPUT));
+				SetCursorPos(100, 100);
+				doIT--;
+			}
 }
 int main(int argc, char** argv)
 {
@@ -83,9 +88,9 @@ int main(int argc, char** argv)
 
 	//Not for TChinese
 	cout << "----" << endl;
-	cout << "¥ªÃþ¤ñ¸Ë¸m¹ïÀ³¬°Q/W & ¥kÃþ¤ñ¸Ë¸m¹ïÀ³¬°O/P" << endl;
-	cout << "§A²{¦b¥i¥H¶}±Ò¹CÀ¸¡C" << endl;
-	cout << "¨Ï¥ÎAlt+Tab¤Á´«µøµ¡ / Ctrl+C / Â÷¶}¹CÀ¸ ¨Ó¸Ñ°£·Æ¹«Âê©w¡C" << endl;
+	cout << "å·¦é¡žæ¯”è£ç½®å°æ‡‰ç‚ºQ/W & å³é¡žæ¯”è£ç½®å°æ‡‰ç‚ºO/P" << endl;
+	cout << "ä½ ç¾åœ¨å¯ä»¥é–‹å•ŸéŠæˆ²ã€‚" << endl;
+	cout << "ä½¿ç”¨Alt+Tabåˆ‡æ›è¦–çª— / Ctrl+C / é›¢é–‹éŠæˆ² ä¾†è§£é™¤æ»‘é¼ éŽ–å®šã€‚" << endl;
 
 	//Keyboard Init
 	Button[0].type = INPUT_KEYBOARD;
@@ -107,11 +112,12 @@ int main(int argc, char** argv)
 	Button[3].ki.time = 0;
 	Button[3].ki.wVk = 'P';
 	Button[3].ki.dwExtraInfo = 0;
-	thread mThread(main_process);
-	thread mThread2(check_task);
-	// wait the thread stop
-	mThread.join();
-	mThread2.join();
+	
+	while (1) {
+		main_process();
+		check_task();
+		Sleep(delay);
+	}
 	// Exit normally
 	return 0;
 }
