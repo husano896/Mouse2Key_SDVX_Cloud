@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 	cout << "You can open the game now." << endl;
 	cout << "Simply press Alt+Tab / Ctrl+C / Exit SDVX to release the mouse." << endl;
 
-	//Not for TChinese
+	//Note for TChinese
 	cout << "----" << endl;
 	cout << "左類比裝置對應為Q/W & 右類比裝置對應為O/P" << endl;
 	cout << "你現在可以開啟遊戲。" << endl;
