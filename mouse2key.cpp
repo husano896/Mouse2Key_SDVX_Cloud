@@ -2,89 +2,107 @@
 #include <iostream>
 #include <tlhelp32.h>
 #include <thread>
-#include <chrono>  
+#include <chrono>
 
 using namespace std;
 
-DWORD FindProcessId(const std::wstring& processName);
+DWORD FindProcessId(const std::wstring &processName);
 bool taskalive = false;
 bool test_mode = false;
 short doIT = 0;
 int delay = 5;
 INPUT Button[4];
 
+#define MOUSE_LOCKPOS 100
+#define KEYUPFLAG (KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP)
+#define KEYDOWNFLAG KEYEVENTF_SCANCODE
+
 //Process & Active Window Checking
-void check_task() {
-		DWORD pid = FindProcessId(L"sv3c.exe");  
-		HWND Active_Window = GetForegroundWindow();
-		DWORD ThreadID;GetWindowThreadProcessId(Active_Window, &ThreadID);
-		taskalive = (ThreadID == pid) || test_mode;
-		if (pid && taskalive) SetActiveWindow(Active_Window);
+void check_task()
+{
+	DWORD pid = FindProcessId(L"sv6c.exe");
+	HWND Active_Window = GetForegroundWindow();
+	DWORD ThreadID;
+	GetWindowThreadProcessId(Active_Window, &ThreadID);
+	taskalive = (ThreadID == pid) || test_mode;
+	if (pid && taskalive)
+		SetActiveWindow(Active_Window);
 }
 
 //Do the mouse stuff
-void main_process() {
-	//F_CK YOU 573 :^
+void main_process()
+{
 
-			if (!taskalive)	return;
-			POINT CursorPos;
-			GetCursorPos(&CursorPos);
-			
-			/*Virtual Key 
-			MSDN : https://msdn.microsoft.com/zh-tw/library/windows/desktop/dd375731%28v=vs.85%29.aspx
-			*/
+	if (!taskalive)
+		return;
+	POINT CursorPos;
+	GetCursorPos(&CursorPos);
 
-			//Prepare a keyup event
-			Button[0].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
-			Button[1].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
-			Button[2].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
-			Button[3].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+	/*
+	Virtual Key 
+	MSDN : https://msdn.microsoft.com/zh-tw/library/windows/desktop/dd375731%28v=vs.85%29.aspx
+	*/
 
-			if (CursorPos.x < 100) {
-				Button[0].ki.dwFlags = KEYEVENTF_SCANCODE;
-				Button[0].ki.wScan = 0x10;
-				doIT = 2;
-			}
-			else if (CursorPos.x > 100) {
-				Button[1].ki.dwFlags = KEYEVENTF_SCANCODE;
-				Button[1].ki.wScan = 0x11;
-				doIT = 2;
-			}
+	//Prepare a keyup event
+	Button[0].ki.dwFlags = KEYUPFLAG;
+	Button[1].ki.dwFlags = KEYUPFLAG;
+	Button[2].ki.dwFlags = KEYUPFLAG;
+	Button[3].ki.dwFlags = KEYUPFLAG;
 
-			if (CursorPos.y < 100) {
-				Button[2].ki.dwFlags = KEYEVENTF_SCANCODE;
-				Button[2].ki.wScan = 0x18;
-				doIT = 2;
-			}
-			else if (CursorPos.y > 100) {
-				Button[3].ki.dwFlags = KEYEVENTF_SCANCODE;
-				Button[3].ki.wScan = 0x19;
-				doIT = 2;
-			}
+	if (CursorPos.x < MOUSE_LOCKPOS)
+	{
+		Button[0].ki.dwFlags = KEYDOWNFLAG;
+		Button[0].ki.wScan = 0x10;
+		doIT = 2;
+	}
+	else if (CursorPos.x > MOUSE_LOCKPOS)
+	{
+		Button[1].ki.dwFlags = KEYDOWNFLAG;
+		Button[1].ki.wScan = 0x11;
+		doIT = 2;
+	}
 
-			if (doIT > 0) {
-				SendInput(4, Button, sizeof(INPUT));
-				SetCursorPos(100, 100);
-				doIT--;
-			}
+	if (CursorPos.y < MOUSE_LOCKPOS)
+	{
+		Button[2].ki.dwFlags = KEYDOWNFLAG;
+		Button[2].ki.wScan = 0x18;
+		doIT = 2;
+	}
+	else if (CursorPos.y > MOUSE_LOCKPOS)
+	{
+		Button[3].ki.dwFlags = KEYDOWNFLAG;
+		Button[3].ki.wScan = 0x19;
+		doIT = 2;
+	}
+
+	if (doIT > 0)
+	{
+		SendInput(4, Button, sizeof(INPUT));
+		SetCursorPos(MOUSE_LOCKPOS, MOUSE_LOCKPOS);
+		doIT--;
+	}
 }
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	//parameter 1 for delay
-	if (argc > 1) {
+	if (argc > 1)
+	{
 		delay = atoi(argv[1]);
 	}
 	//parameter 2 for "any window" mode
-	if (argc > 2) {
+	if (argc > 2)
+	{
 		test_mode = true;
 	}
-	
+
 	//Note for English
-	cout << "Mouse to key for SDVX III Cloud by xFly" << endl << "https://www.facebook.com/L.F.Arashi" << endl << endl;
+	cout << "Mouse to key for SDVX VI Cloud by xFly" << endl
+		 << "xFly.Dragon" << endl
+		 << endl;
 	cout << "Current check delay : " << delay << " ms" << endl;
 	cout << "Q/W For Left Analog Device & O/P For Right Analog Device" << endl;
 	cout << "You can open the game now." << endl;
-	cout << "Simply press Alt+Tab / Ctrl+C / Exit SDVX to release the mouse." << endl;
+	cout << "Press Alt+Tab / Ctrl+C / Exit SDVX to release the mouse." << endl;
 
 	//Note for TChinese
 	cout << "----" << endl;
@@ -112,8 +130,9 @@ int main(int argc, char** argv)
 	Button[3].ki.time = 0;
 	Button[3].ki.wVk = 'P';
 	Button[3].ki.dwExtraInfo = 0;
-	
-	while (1) {
+
+	while (573)
+	{
 		main_process();
 		check_task();
 		Sleep(delay);
@@ -122,7 +141,7 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-DWORD FindProcessId(const std::wstring& processName)
+DWORD FindProcessId(const std::wstring &processName)
 {
 	PROCESSENTRY32 processInfo;
 	processInfo.dwSize = sizeof(processInfo);
