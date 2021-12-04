@@ -1,6 +1,6 @@
 # Mouse2Key_SDVX_Cloud
 
-Mouse2Key for SDVX Cloud
+Mouse2Key for SDVX Cloud (Now with EG Support)
 
 Q / W for Left Knob(X-Axis)
 O / P for Right Knob(X-Axis)

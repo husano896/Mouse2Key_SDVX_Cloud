@@ -39,7 +39,7 @@ void main_process()
 	GetCursorPos(&CursorPos);
 
 	/*
-	Virtual Key 
+	Virtual Key
 	MSDN : https://msdn.microsoft.com/zh-tw/library/windows/desktop/dd375731%28v=vs.85%29.aspx
 	*/
 
@@ -96,9 +96,7 @@ int main(int argc, char **argv)
 	}
 
 	//Note for English
-	cout << "Mouse to key for SDVX VI Cloud by xFly" << endl
-		 << "xFly.Dragon" << endl
-		 << endl;
+	cout << "Mouse to key for SDVX VI Cloud by xFly (https://www.facebook.com/xFly.Dragon)" << endl;
 	cout << "Current check delay : " << delay << " ms" << endl;
 	cout << "Q/W For Left Analog Device & O/P For Right Analog Device" << endl;
 	cout << "You can open the game now." << endl;
